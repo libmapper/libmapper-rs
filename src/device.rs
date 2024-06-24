@@ -88,18 +88,31 @@ impl Device {
     }
 }
 
+pub trait MappableType {
+    fn get_mpr_type() -> mpr_type;
+}
+
+impl MappableType for f64 {
+    fn get_mpr_type() -> mpr_type {
+        mpr_type::MPR_DBL
+    }
+}
+
+impl MappableType for f32 {
+    fn get_mpr_type() -> mpr_type {
+        mpr_type::MPR_FLT
+    }
+}
+
+impl MappableType for i32 {
+    fn get_mpr_type() -> mpr_type {
+        mpr_type::MPR_INT32
+    }
+}
+
 impl Device {
-    pub fn create_signal<T: Sized + 'static + Copy, const SIZE: i32>(&self, name: &str, direction: mpr_dir) -> Signal<T, SIZE> {
-        let data_type: mpr_type;
-        if TypeId::of::<T>() == TypeId::of::<f64>() {
-            data_type = mpr_type::MPR_DBL;
-        } else if TypeId::of::<T>() == TypeId::of::<f32>() {
-            data_type = mpr_type::MPR_FLT
-        } else if TypeId::of::<T>() == TypeId::of::<i32>() {
-            data_type = mpr_type::MPR_INT32
-        } else {
-            panic!("Unsupported libmapper type");
-        }
+    pub fn create_signal<T: MappableType, const SIZE: i32>(&self, name: &str, direction: mpr_dir) -> Signal<T, SIZE> {
+        let data_type: mpr_type = T::get_mpr_type();
 
         let name_ptr = CString::new(name).expect("CString::new failed");
         unsafe {

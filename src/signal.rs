@@ -1,14 +1,14 @@
 
 use std::ffi::c_void;
 
-use crate::{bindings::{mpr_sig, mpr_sig_get_value, mpr_sig_set_value, mpr_type}, device::Device};
+use crate::{bindings::{mpr_sig, mpr_sig_get_value, mpr_sig_set_value, mpr_type}, device::{Device, MappableType}};
 
-pub struct Signal<T: Sized + Copy, const COUNT: i32> {
+pub struct Signal<T: MappableType + Sized, const COUNT: i32> {
     pub(crate) handle: mpr_sig,
     pub(crate) data_type: mpr_type,
     pub(crate) phantom: std::marker::PhantomData<T>
 }
-impl<T: Copy, const COUNT: i32> Signal<T, COUNT> {
+impl<T: MappableType + Sized, const COUNT: i32> Signal<T, COUNT> {
 
     pub fn get_value(&self, index: u64) -> (&[T], u64) {
         let mut time: u64 = 0;
@@ -25,7 +25,7 @@ impl<T: Copy, const COUNT: i32> Signal<T, COUNT> {
     }
 }
 
-impl<T: Copy> Signal<T, 1> {
+impl<T: MappableType + Sized + Copy> Signal<T, 1> {
   pub fn get_value_single(&self, index: u64) -> Option<(T, u64)> {
     let mut time: u64 = 0;
     unsafe {

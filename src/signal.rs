@@ -1,7 +1,7 @@
 
 use std::ffi::c_void;
 
-use crate::{bindings::{mpr_sig, mpr_sig_get_value, mpr_sig_set_value, mpr_type}, device::{Device, MappableType}};
+use crate::{bindings::{mpr_sig, mpr_sig_get_value, mpr_sig_set_value, mpr_type}, device::MappableType};
 
 pub struct Signal<T: MappableType + Sized, const COUNT: i32> {
     pub(crate) handle: mpr_sig,

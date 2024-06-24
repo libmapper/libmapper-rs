@@ -1,4 +1,3 @@
-#![feature(generic_const_exprs)]
 pub mod device;
 pub mod graph;
 pub mod signal;

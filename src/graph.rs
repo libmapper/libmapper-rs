@@ -1,4 +1,4 @@
-use crate::{bindings::*, device::Device};
+use crate::bindings::*;
 
 /// A graph is a lightweight connection to libmapper's distributed graph.
 /// You can use a graph to create maps and query the state of the graph.

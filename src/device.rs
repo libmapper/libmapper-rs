@@ -1,8 +1,7 @@
-use std::any::TypeId;
-use std::ffi::{CString};
+use std::ffi::CString;
 use std::os::raw::c_int;
 use std::ptr;
-use crate::bindings::{mpr_dev, mpr_dev_free, mpr_dev_get_is_ready, mpr_dev_new, mpr_dev_poll, mpr_dir, mpr_sig, mpr_sig_new, mpr_type};
+use crate::bindings::{mpr_dev, mpr_dev_free, mpr_dev_get_is_ready, mpr_dev_new, mpr_dev_poll, mpr_dir, mpr_sig_new, mpr_type};
 use crate::signal::Signal;
 
 /// A device is libmapper's connection to the distributed graph.

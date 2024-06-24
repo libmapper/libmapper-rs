@@ -4,7 +4,6 @@ use crate::{bindings::*, device::Device};
 /// You can use a graph to create maps and query the state of the graph.
 pub struct Graph {
     pub(crate) handle: mpr_graph,
-    pub(crate) devices: Vec<Device>,
     owned: bool
 }
 
@@ -12,7 +11,6 @@ impl Graph {
   pub fn create() -> Graph {
     Graph {
       owned: true,
-      devices: Vec::new(),
       handle: unsafe { mpr_graph_new(0) }
     }
   }

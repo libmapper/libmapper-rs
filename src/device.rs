@@ -20,6 +20,8 @@ pub struct Device {
     owned: bool
 }
 
+
+
 impl Device {
     pub fn create(name: &str) -> Device {
         let name_ptr = CString::new(name).expect("CString::new failed");
@@ -62,6 +64,8 @@ impl Device {
 }
 
 impl Device {
+    /// Tests if the device is ready to use.
+    /// Do not try to call any other methods until this returns `true`.
     pub fn is_ready(&self) -> bool {
         unsafe {
             mpr_dev_get_is_ready(self.handle) > 0

@@ -1,6 +1,9 @@
+use std::any::TypeId;
 use std::ffi::{CString};
 use std::os::raw::c_int;
-use crate::bindings::{mpr_dev, mpr_dev_free, mpr_dev_get_is_ready, mpr_dev_new, mpr_dev_poll};
+use std::ptr;
+use crate::bindings::{mpr_dev, mpr_dev_free, mpr_dev_get_is_ready, mpr_dev_new, mpr_dev_poll, mpr_dir, mpr_sig, mpr_sig_new, mpr_type};
+use crate::signal::Signal;
 
 /// A device is libmapper's connection to the distributed graph.
 /// Each device is a collection of signal instances and their metadata.
@@ -82,5 +85,26 @@ impl Device {
         unsafe {
             mpr_dev_get_is_ready(self.handle) > 0
         }
+    }
+}
+
+impl Device {
+    pub fn create_signal<T: Sized + 'static + Copy, const SIZE: i32>(&self, name: &str, direction: mpr_dir) -> Signal<T, SIZE> {
+        let data_type: mpr_type;
+        if TypeId::of::<T>() == TypeId::of::<f64>() {
+            data_type = mpr_type::MPR_DBL;
+        } else {
+            panic!("Unsupported libmapper type");
+        }
+
+        let name_ptr = CString::new(name).expect("CString::new failed");
+        unsafe {
+            Signal {
+                handle: mpr_sig_new(self.handle, direction, name_ptr.as_ptr(), SIZE as i32, data_type, None, None, None, ptr::null_mut(), None, 0),
+                data_type,
+                phantom: std::marker::PhantomData
+            }
+        }
+
     }
 }

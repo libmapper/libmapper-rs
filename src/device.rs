@@ -93,6 +93,10 @@ impl Device {
         let data_type: mpr_type;
         if TypeId::of::<T>() == TypeId::of::<f64>() {
             data_type = mpr_type::MPR_DBL;
+        } else if TypeId::of::<T>() == TypeId::of::<f32>() {
+            data_type = mpr_type::MPR_FLT
+        } else if TypeId::of::<T>() == TypeId::of::<i32>() {
+            data_type = mpr_type::MPR_INT32
         } else {
             panic!("Unsupported libmapper type");
         }

@@ -13,7 +13,11 @@ use crate::bindings::{mpr_dev, mpr_dev_free, mpr_dev_get_is_ready, mpr_dev_new, 
 /// // you have to poll a device occasionally to make things happen
 /// loop {
 ///     dev.poll_and_block(10); // poll in 10ms intervals
+///     if dev.is_ready() {
+///        break;
+///     }
 /// }
+/// // create signals, etc...
 /// ```
 pub struct Device {
     handle: mpr_dev,

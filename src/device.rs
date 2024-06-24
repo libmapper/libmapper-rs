@@ -1,6 +1,6 @@
 use std::ffi::{CString};
 use std::os::raw::c_int;
-use crate::bindings::{mpr_dev, mpr_dev_get_is_ready, mpr_dev_new, mpr_dev_poll};
+use crate::bindings::{mpr_dev, mpr_dev_free, mpr_dev_get_is_ready, mpr_dev_new, mpr_dev_poll};
 
 /// A device is libmapper's connection to the distributed graph.
 /// Each device is a collection of signal instances and their metadata.
@@ -20,7 +20,15 @@ pub struct Device {
     owned: bool
 }
 
-
+impl Drop for Device {
+    fn drop(&mut self) {
+        if self.owned {
+            unsafe {
+                mpr_dev_free(self.handle);
+            }
+        }
+    }
+}
 
 impl Device {
     pub fn create(name: &str) -> Device {

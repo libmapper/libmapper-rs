@@ -1,6 +1,7 @@
 use libmapper_rs::device::Device;
 
 fn main() {
+    println!("Using libmapper version {} ", libmapper_rs::get_mapper_version());
     let dev = Device::create("rustmapper");
     loop {
         dev.poll_and_block(10);

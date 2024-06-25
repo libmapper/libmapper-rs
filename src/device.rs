@@ -110,16 +110,19 @@ impl MappableType for i32 {
 }
 
 impl Device {
-    pub fn create_signal<T: MappableType>(&self, name: &str, direction: mpr_dir) -> Signal {
+    pub fn create_signal<T: MappableType + Copy>(&self, name: &str, direction: mpr_dir) -> Signal {
+        self.create_vector_signal::<T>(name, direction, 1)
+    }
+    pub fn create_vector_signal<T: MappableType + Copy>(&self, name: &str, direction: mpr_dir, vector_length: u32) -> Signal {
         let data_type: mpr_type = T::get_mpr_type();
 
         let name_ptr = CString::new(name).expect("CString::new failed");
         unsafe {
             Signal {
-                handle: mpr_sig_new(self.handle, direction, name_ptr.as_ptr(), 1, data_type, ptr::null(), ptr::null(), ptr::null(), ptr::null_mut(), None, 0),
+                handle: mpr_sig_new(self.handle, direction, name_ptr.as_ptr(), vector_length as i32, data_type, ptr::null(), ptr::null(), ptr::null(), ptr::null_mut(), None, 0),
                 data_type,
                 owned: true,
-                vector_length: 1
+                vector_length
             }
         }
     }

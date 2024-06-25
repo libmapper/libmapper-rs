@@ -454,9 +454,9 @@ extern "C" {
     #[doc = " Create a map between a set of signals. The map will not take effect until it\n  has been added to the distributed graph using `mpr_obj_push()`.\n  \\param num_sources      The number of source signals in this map.\n  \\param sources          Array of source signal data structures.\n  \\param num_destinations The number of destination signals in this map.\n                          Currently restricted to `1`.\n  \\param destinations     Array of destination signal data structures.\n  \\return                 A map data structure – either loaded from the graph (if the map already\n                          existed) or newly created. In the latter case the map will not take\n                          effect until it has been added to the distributed graph using\n                          `mpr_obj_push()`."]
     pub fn mpr_map_new(
         num_sources: ::std::os::raw::c_int,
-        sources: *mut mpr_sig,
+        sources: *const mpr_sig,
         num_destinations: ::std::os::raw::c_int,
-        destinations: *mut mpr_sig,
+        destinations: *const mpr_sig,
     ) -> mpr_map;
     #[doc = " Create a map between a set of signals using an expression string containing embedded format\n  specifiers that are replaced by `mpr_sig` values specified in subsequent additional arguments.\n  The map will not take effect until it has been added to the distributed graph using\n  `mpr_obj_push()`.\n  \\param expression   A string specifying the map expression to use when mapping source to\n                      destination signals. The format specifier \"%x\" is used to specify source\n                      signals and the \"%y\" is used to specify the destination signal.\n  \\param ...          A sequence of additional `mpr_sig` arguments, one for each format specifier\n                      in the format string\n  \\return             A map data structure – either loaded from the graph (if the map already\n                      existed) or newly created. Changes to the map will not take effect until it\n                      has been added to the distributed graph using `mpr_obj_push()`."]
     pub fn mpr_map_new_from_str(expression: *const ::std::os::raw::c_char, ...) -> mpr_map;

@@ -10,6 +10,9 @@ pub struct Signal {
     pub(crate) vector_length: u32
 }
 
+unsafe impl Send for Signal {}
+unsafe impl Sync for Signal {}
+
 impl Drop for Signal {
     fn drop(&mut self) {
         if self.owned {

@@ -26,6 +26,9 @@ pub struct Device {
     owned: bool
 }
 
+unsafe impl Send for Device {}
+unsafe impl Sync for Device {}
+
 impl Drop for Device {
     fn drop(&mut self) {
         if self.owned {

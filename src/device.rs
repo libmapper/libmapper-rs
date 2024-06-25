@@ -116,7 +116,7 @@ impl Device {
         let name_ptr = CString::new(name).expect("CString::new failed");
         unsafe {
             Signal {
-                handle: mpr_sig_new(self.handle, direction, name_ptr.as_ptr(), SIZE as i32, data_type, None, None, None, ptr::null_mut(), None, 0),
+                handle: mpr_sig_new(self.handle, direction, name_ptr.as_ptr(), SIZE as i32, data_type, ptr::null(), ptr::null(), ptr::null(), ptr::null_mut(), None, 0),
                 data_type,
                 phantom: std::marker::PhantomData
             }

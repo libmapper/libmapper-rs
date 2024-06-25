@@ -12,9 +12,9 @@ pub fn main() {
     }
 
     println!("Device became ready!");
-    let mut sigA = dev.create_signal::<i32>("output", libmapper_rs::constants::mpr_dir::MPR_DIR_OUT);
-    let sigB = dev.create_signal::<i32>("input", libmapper_rs::constants::mpr_dir::MPR_DIR_IN);
-    let map = Map::create(&sigA, &sigB);
+    let mut sig_a = dev.create_signal::<i32>("output", libmapper_rs::constants::mpr_dir::MPR_DIR_OUT);
+    let sig_b = dev.create_signal::<i32>("input", libmapper_rs::constants::mpr_dir::MPR_DIR_IN);
+    let map = Map::create(&sig_a, &sig_b);
     map.push();
     loop {
         dev.poll_and_block(100);
@@ -24,9 +24,9 @@ pub fn main() {
     }
     println!("Map created!");
     for i in 0..100 {
-      sigA.set_value_single(&i);
+      sig_a.set_value_single(&i);
       dev.poll_and_block(10);
-      let val = sigB.get_value_single::<i32>().expect("Signal didn't send!");
+      let val = sig_b.get_value_single::<i32>().expect("Signal didn't send!");
       assert_eq!(i, val.0)
     }
 }

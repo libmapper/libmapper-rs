@@ -1,13 +1,23 @@
 
 use std::ffi::c_void;
 
-use crate::{bindings::{mpr_sig, mpr_sig_get_inst_status, mpr_sig_get_value, mpr_sig_inst_status, mpr_sig_set_value, mpr_type}, device::MappableType};
+use crate::{bindings::{mpr_sig, mpr_sig_free, mpr_sig_get_inst_status, mpr_sig_get_value, mpr_sig_inst_status, mpr_sig_set_value, mpr_type}, device::MappableType};
 
 pub struct Signal {
     pub(crate) handle: mpr_sig,
     pub(crate) owned: bool,
     pub(crate) data_type: mpr_type,
     pub(crate) vector_length: u32
+}
+
+impl Drop for Signal {
+    fn drop(&mut self) {
+        if self.owned {
+            unsafe {
+                mpr_sig_free(self.handle);
+            }
+        }
+    }
 }
 
 impl Signal {

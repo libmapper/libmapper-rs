@@ -11,7 +11,4 @@ fn main() {
     }
 
     println!("Device became ready!");
-    loop {
-        dev.poll_and_block(100);
-    }
 }

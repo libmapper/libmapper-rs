@@ -27,6 +27,7 @@ pub fn main() {
       sig_a.set_value_single(&i);
       dev.poll_and_block(10);
       let val = sig_b.get_value_single::<i32>().expect("Signal didn't send!");
+      println!("Sent: {}, Received: {}", i, val.0);
       assert_eq!(i, val.0)
     }
 }

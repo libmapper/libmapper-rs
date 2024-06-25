@@ -11,10 +11,44 @@ pub struct Signal {
 }
 
 impl Signal {
+    /// Get the status of the signal instance.
+    /// Calling this function will reset the flags `was_set_remote` and `was_set_local` and return their pre-reset values.
+    /// 
+    /// # Examples
+    /// Use this function to check if you should push or read data from the signal:
+    /// ```
+    /// use libmapper_rs::device::Device;
+    /// use libmapper_rs::signal::Signal;
+    /// fn main_loop(dev: &Device, sig: &mut Signal, value: &mut f64) {
+    ///     loop {
+    ///        dev.poll_and_block(10);
+    /// 
+    ///        if sig.get_status().was_set_remote() { // check if there's a new value waiting for us
+    ///          let (new_value, _) = sig.get_value_single::<f64>().unwrap();
+    ///          *value = new_value;
+    ///        } else {
+    ///          sig.set_value_single(value);
+    ///        }
+    ///     }
+    /// }
+    /// ```
     pub fn get_status(&self) -> SignalStatus {
         SignalStatus(unsafe {
             mpr_sig_get_inst_status(self.handle, 0)
         })
+    }
+
+    /// Get the type of data this signal is storing.
+    pub fn get_type(&self) -> mpr_type {
+        self.data_type
+    }
+
+    /// Get the length of the vector this signal is storing.
+    /// This will be how long the slice returned from Signal::get_value is.
+    /// 
+    /// If this is 1, you should use Signal::get_value_single instead.
+    pub fn get_vector_length(&self) -> u32 {
+        self.vector_length
     }
 }
 
@@ -41,6 +75,10 @@ impl SignalStatus {
 }
 
 impl Signal {
+    /// Set the value of the signal.
+    /// This function will panic if the data type of the signal does not match the type of the value.
+    /// 
+    /// If this signal is a vector, only the first element of the vector will be set.
     pub fn set_value_single<T: MappableType + Copy>(&mut self, value: &T) {
         if T::get_mpr_type() != self.data_type {
             panic!("Data type mismatch");
@@ -50,6 +88,10 @@ impl Signal {
         }
     }
 
+    /// Get the value of the signal.
+    /// This function will panic if the data type of the signal does not match the type of the value.
+    /// 
+    /// If this signal is a vector, only the first element of the vector will be returned.
     pub fn get_value_single<T: MappableType + Copy>(&self) -> Option<(T, u64)> {
         let mut time = 0;
         if T::get_mpr_type() != self.data_type {
@@ -65,6 +107,10 @@ impl Signal {
         }
     }
 
+    /// Get the value of the signal.
+    /// This function will panic if the data type of the signal does not match the type of the value.
+    /// 
+    /// The length of the returned slice will be equal to the value returned by [get_vector_length](Signal::get_vector_length).
     pub fn get_value<T: MappableType + Copy>(&self) -> Option<(&[T], u64)> {
         let mut time = 0;
         if T::get_mpr_type() != self.data_type {
@@ -80,6 +126,11 @@ impl Signal {
         }
     }
 
+    /// Set the value of the signal.
+    /// This function will panic if the data type of the signal does not match the type of the value.
+    /// 
+    /// The length of the slice must be equal to the value returned by [get_vector_length](Signal::get_vector_length).
+    /// If the lengths are not equal this function will panic.
     pub fn set_value<T: MappableType + Copy>(&mut self, values: &[T]) {
         if T::get_mpr_type() != self.data_type {
             panic!("Data type mismatch");

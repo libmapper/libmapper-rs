@@ -27,7 +27,7 @@ impl Drop for Signal {
 #[derive(Debug)]
 pub enum SignalError {
     #[doc = "The data type of the signal does not match the type of the passed generic type."]
-    InvalidType,
+    WrongType,
     #[doc = "The signal does not have a value set yet."]
     NoValue,
     #[doc = "The length of the passed slice does not match the vector length of the signal."]
@@ -100,12 +100,12 @@ impl SignalStatus {
 
 impl Signal {
     /// Set the value of the signal.
-    /// This function will panic if the data type of the signal does not match the type of the value.
+    /// This function will return [SignalError::WrongType](SignalError:WrongType) if the passed generic type doesn't match the signal's type.
     /// 
     /// If this signal is a vector, only the first element of the vector will be set.
     pub fn set_value_single<T: MappableType + Copy>(&mut self, value: &T) -> Result<(), SignalError> {
         if T::get_mpr_type() != self.data_type {
-            return Err(SignalError::InvalidType);
+            return Err(SignalError::WrongType);
         }
         unsafe {
             mpr_sig_set_value(self.handle, 0, 1,  self.data_type, value as *const T as *const c_void);
@@ -114,13 +114,13 @@ impl Signal {
     }
 
     /// Get the value of the signal.
-    /// This function will panic if the data type of the signal does not match the type of the value.
+    /// This function will return [SignalError::WrongType](SignalError:WrongType) if the passed generic type doesn't match the signal's type.
     /// 
     /// If this signal is a vector, only the first element of the vector will be returned.
     pub fn get_value_single<T: MappableType + Copy>(&self) -> Result<(T, u64), SignalError> {
         let mut time = 0;
         if T::get_mpr_type() != self.data_type {
-            return Err(SignalError::InvalidType);
+            return Err(SignalError::WrongType);
         }
         unsafe {
             let ptr = mpr_sig_get_value(self.handle, 0, &mut time);
@@ -133,13 +133,13 @@ impl Signal {
     }
 
     /// Get the value of the signal.
-    /// This function will panic if the data type of the signal does not match the type of the value.
+    /// This function will return [SignalError::WrongType](SignalError:WrongType) if the passed generic type doesn't match the signal's type.
     /// 
     /// The length of the returned slice will be equal to the value returned by [get_vector_length](Signal::get_vector_length).
     pub fn get_value<T: MappableType + Copy>(&self) -> Result<(Vec<T>, u64), SignalError> {
         let mut time = 0;
         if T::get_mpr_type() != self.data_type {
-            return Err(SignalError::InvalidType);
+            return Err(SignalError::WrongType);
         }
         unsafe {
             let ptr = mpr_sig_get_value(self.handle, 0, &mut time);
@@ -152,13 +152,13 @@ impl Signal {
     }
 
     /// Set the value of the signal.
-    /// This function will panic if the data type of the signal does not match the type of the value.
+    /// This function will return [SignalError::WrongType](SignalError:WrongType) if the passed generic type doesn't match the signal's type.
     /// 
     /// The length of the slice must be equal to the value returned by [get_vector_length](Signal::get_vector_length).
-    /// If the lengths are not equal this function will panic.
+    /// If the lengths are not equal this function return an `Err` of `SignalError::WrongLengthArg`.
     pub fn set_value<T: MappableType + Copy>(&mut self, values: &[T]) -> Result<(), SignalError> {
         if T::get_mpr_type() != self.data_type {
-            return Err(SignalError::InvalidType);
+            return Err(SignalError::WrongType);
         }
         if values.len() != self.vector_length as usize {
             return Err(SignalError::WrongLengthArg);

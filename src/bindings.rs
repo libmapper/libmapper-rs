@@ -356,7 +356,7 @@ extern "C" {
     #[doc = " Helper to print the properties of an object.\n  \\param object       The object to print.\n  \\param staged       1 to print staged properties, `0` otherwise."]
     pub fn mpr_obj_print(object: mpr_obj, staged: ::std::os::raw::c_int);
     #[doc = " Allocate and initialize a device.\n  \\param name         A short descriptive string to identify the device. Must not contain spaces\n                      or the slash character '/'.\n  \\param graph        A previously allocated graph structure to use. If 0, one will be allocated\n                      for use with this device.\n  \\return             A newly allocated device.  Should be freed using `mpr_dev_free()`."]
-    pub fn mpr_dev_new(name: *const ::std::os::raw::c_char, graph: Option<mpr_graph>) -> mpr_dev;
+    pub fn mpr_dev_new(name: *const ::std::os::raw::c_char, graph: mpr_graph) -> mpr_dev;
     #[doc = " Remove a device from the graph and free its resources.\n  \\param device       The device to free."]
     pub fn mpr_dev_free(device: mpr_dev);
     #[doc = " Return a unique identifier associated with a given device.\n  \\param device       The device to use.\n  \\return             A new unique id."]

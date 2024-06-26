@@ -2,6 +2,7 @@ use std::ffi::CString;
 use std::os::raw::c_int;
 use std::ptr;
 use crate::bindings::{mpr_dev, mpr_dev_free, mpr_dev_get_is_ready, mpr_dev_new, mpr_dev_poll, mpr_dir, mpr_sig_new, mpr_type};
+use crate::graph::Graph;
 use crate::signal::Signal;
 
 /// A device is libmapper's connection to the distributed graph.
@@ -45,7 +46,16 @@ impl Device {
         unsafe {
             Device {
                 owned: true,
-                handle: mpr_dev_new(name_ptr.as_ptr(), None)
+                handle: mpr_dev_new(name_ptr.as_ptr(), ptr::null_mut())
+            }
+        }
+    }
+    pub fn create_from_graph(name: &str, graph: &Graph) -> Device {
+        let name_ptr = CString::new(name).expect("CString::new failed");
+        unsafe {
+            Device {
+                owned: true,
+                handle: mpr_dev_new(name_ptr.as_ptr(), graph.handle)
             }
         }
     }

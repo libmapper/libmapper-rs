@@ -1,5 +1,5 @@
 
-use std::{f32::consts::E, ffi::c_void};
+use std::ffi::c_void;
 
 use crate::{bindings::{mpr_sig, mpr_sig_free, mpr_sig_get_inst_status, mpr_sig_get_value, mpr_sig_inst_status, mpr_sig_set_value, mpr_type}, device::MappableType};
 

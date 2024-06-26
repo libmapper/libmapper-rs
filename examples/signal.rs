@@ -22,7 +22,7 @@ fn main() {
             .as_millis() as u64) as f64
             / 1000f64)
             .sin();
-        sig.set_value_single(&time);
+        sig.set_value_single(&time).unwrap();
         if debug_sig.get_status().was_set_remote() {
             println!(
                 "Received debug message: {:?}",

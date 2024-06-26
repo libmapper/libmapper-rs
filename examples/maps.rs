@@ -23,7 +23,7 @@ pub fn main() {
     }
     println!("Map created!");
     for i in 0..100 {
-        sig_a.set_value_single(&i);
+        sig_a.set_value_single(&i).unwrap();
         dev.poll_and_block(10);
         let val = sig_b
             .get_value_single::<i32>()

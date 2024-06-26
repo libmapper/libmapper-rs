@@ -23,7 +23,7 @@ fn main() {
             / 1000f64;
 
         let values = [time.sin(), time.cos()];
-        sig.set_value(&values);
+        sig.set_value(&values).unwrap();
         if debug_sig.get_status().was_set_remote() {
             println!(
                 "Received debug message: {:?}",

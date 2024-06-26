@@ -1,4 +1,4 @@
-use std::{sync::Arc, thread::{self, JoinHandle}};
+use std::{env, sync::Arc, thread::{self, JoinHandle}};
 
 use libmapper_rs::graph::Graph;
 
@@ -19,8 +19,14 @@ fn main() {
     threads.push(thread);
   }
 
+  let mut num_workers = 10;
+  let arg = env::args().skip(1).next();
+  if arg.is_some() {
+    num_workers = arg.unwrap().parse::<i32>().unwrap_or(10);
+  }
+
   // spawn 10 threads creating then deleting devices at random
-  for _ in 0..10 {
+  for _ in 0..num_workers {
     let graph = graph.clone();
     let thread = std::thread::spawn(move || {
       let name = format!("rust_{:?}", thread::current().id());

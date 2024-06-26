@@ -1,5 +1,5 @@
 
-use std::ffi::c_void;
+use std::{f32::consts::E, ffi::c_void};
 
 use crate::{bindings::{mpr_sig, mpr_sig_free, mpr_sig_get_inst_status, mpr_sig_get_value, mpr_sig_inst_status, mpr_sig_set_value, mpr_type}, device::MappableType};
 
@@ -21,6 +21,17 @@ impl Drop for Signal {
             }
         }
     }
+}
+
+/// An error that can occur when getting or setting the value of a signal.
+#[derive(Debug)]
+pub enum SignalError {
+    #[doc = "The data type of the signal does not match the type of the passed generic type."]
+    InvalidType,
+    #[doc = "The signal does not have a value set yet."]
+    NoValue,
+    #[doc = "The length of the passed slice does not match the vector length of the signal."]
+    WrongLengthArg
 }
 
 impl Signal {
@@ -92,31 +103,32 @@ impl Signal {
     /// This function will panic if the data type of the signal does not match the type of the value.
     /// 
     /// If this signal is a vector, only the first element of the vector will be set.
-    pub fn set_value_single<T: MappableType + Copy>(&mut self, value: &T) {
+    pub fn set_value_single<T: MappableType + Copy>(&mut self, value: &T) -> Result<(), SignalError> {
         if T::get_mpr_type() != self.data_type {
-            panic!("Data type mismatch");
+            return Err(SignalError::InvalidType);
         }
         unsafe {
             mpr_sig_set_value(self.handle, 0, 1,  self.data_type, value as *const T as *const c_void);
         }
+        Ok(())
     }
 
     /// Get the value of the signal.
     /// This function will panic if the data type of the signal does not match the type of the value.
     /// 
     /// If this signal is a vector, only the first element of the vector will be returned.
-    pub fn get_value_single<T: MappableType + Copy>(&self) -> Option<(T, u64)> {
+    pub fn get_value_single<T: MappableType + Copy>(&self) -> Result<(T, u64), SignalError> {
         let mut time = 0;
         if T::get_mpr_type() != self.data_type {
-            panic!("Data type mismatch");
+            return Err(SignalError::InvalidType);
         }
         unsafe {
             let ptr = mpr_sig_get_value(self.handle, 0, &mut time);
             if ptr.is_null() {
-                return None;
+                return Err(SignalError::NoValue);
             }
             let value = *(ptr as *const T);
-            Some((value, time))
+            Ok((value, time))
         }
     }
 
@@ -124,18 +136,18 @@ impl Signal {
     /// This function will panic if the data type of the signal does not match the type of the value.
     /// 
     /// The length of the returned slice will be equal to the value returned by [get_vector_length](Signal::get_vector_length).
-    pub fn get_value<T: MappableType + Copy>(&self) -> Option<(Vec<T>, u64)> {
+    pub fn get_value<T: MappableType + Copy>(&self) -> Result<(Vec<T>, u64), SignalError> {
         let mut time = 0;
         if T::get_mpr_type() != self.data_type {
-            panic!("Data type mismatch");
+            return Err(SignalError::InvalidType);
         }
         unsafe {
             let ptr = mpr_sig_get_value(self.handle, 0, &mut time);
             if ptr.is_null() {
-                return None;
+                return Err(SignalError::NoValue);
             }
             let slice = std::slice::from_raw_parts(ptr as *const T, self.vector_length as usize);
-            Some((slice.to_vec(), time))
+            Ok((slice.to_vec(), time))
         }
     }
 
@@ -144,15 +156,16 @@ impl Signal {
     /// 
     /// The length of the slice must be equal to the value returned by [get_vector_length](Signal::get_vector_length).
     /// If the lengths are not equal this function will panic.
-    pub fn set_value<T: MappableType + Copy>(&mut self, values: &[T]) {
+    pub fn set_value<T: MappableType + Copy>(&mut self, values: &[T]) -> Result<(), SignalError> {
         if T::get_mpr_type() != self.data_type {
-            panic!("Data type mismatch");
+            return Err(SignalError::InvalidType);
         }
         if values.len() != self.vector_length as usize {
-            panic!("Vector length mismatch");
+            return Err(SignalError::WrongLengthArg);
         }
         unsafe {
             mpr_sig_set_value(self.handle, 0, self.vector_length as i32, self.data_type, values.as_ptr() as *const c_void);
         }
+        Ok(())
     }
 }

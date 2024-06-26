@@ -124,7 +124,7 @@ impl Signal {
     /// This function will panic if the data type of the signal does not match the type of the value.
     /// 
     /// The length of the returned slice will be equal to the value returned by [get_vector_length](Signal::get_vector_length).
-    pub fn get_value<T: MappableType + Copy>(&self) -> Option<(&[T], u64)> {
+    pub fn get_value<T: MappableType + Copy>(&self) -> Option<(Vec<T>, u64)> {
         let mut time = 0;
         if T::get_mpr_type() != self.data_type {
             panic!("Data type mismatch");
@@ -135,7 +135,7 @@ impl Signal {
                 return None;
             }
             let slice = std::slice::from_raw_parts(ptr as *const T, self.vector_length as usize);
-            Some((slice, time))
+            Some((slice.to_vec(), time))
         }
     }
 

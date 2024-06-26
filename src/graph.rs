@@ -7,6 +7,9 @@ pub struct Graph {
     owned: bool
 }
 
+unsafe impl Send for Graph {}
+unsafe impl Sync for Graph {}
+
 impl Graph {
   pub fn create() -> Graph {
     Graph {

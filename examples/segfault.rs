@@ -1,10 +1,11 @@
-use std::{env, sync::Arc, thread::{self, JoinHandle}};
+use std::{env, sync::{atomic::{AtomicU64, Ordering}, Arc}, thread::{self, JoinHandle}};
 
 use libmapper_rs::graph::Graph;
 
 
 fn main() {
   let graph = Arc::new(Graph::create());
+  let counter: Arc<AtomicU64> = Arc::new(AtomicU64::new(0));
 
   let mut threads = Vec::<JoinHandle<()>>::new();
 
@@ -28,6 +29,7 @@ fn main() {
   // spawn 10 threads creating then deleting devices at random
   for _ in 0..num_workers {
     let graph = graph.clone();
+    let id_counter = counter.clone();
     let thread = std::thread::spawn(move || {
       let name = format!("rust_{:?}", thread::current().id());
       loop {
@@ -39,7 +41,7 @@ fn main() {
           }
         }
         let signal = _dev.create_signal::<f32>("test_sig", libmapper_rs::constants::mpr_dir::MPR_DIR_OUT);
-        thread::sleep(std::time::Duration::from_millis(rand::random::<u64>() % 10));
+        thread::sleep(std::time::Duration::from_millis(id_counter.fetch_add(1, Ordering::SeqCst) as u64));
         drop(signal);
         drop(_dev);
       }

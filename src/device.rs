@@ -23,7 +23,7 @@ use crate::signal::Signal;
 /// // create signals, etc...
 /// ```
 pub struct Device {
-    handle: mpr_dev,
+    pub(crate) handle: mpr_dev,
     owned: bool
 }
 
@@ -132,7 +132,8 @@ impl Device {
         let name_ptr = CString::new(name).expect("CString::new failed");
         unsafe {
             Signal {
-                handle: mpr_sig_new(self.handle, direction, name_ptr.as_ptr(), vector_length as i32, data_type, ptr::null(), ptr::null(), ptr::null(), ptr::null_mut(), None, 0),
+                handle: mpr_sig_new(self.handle, direction, name_ptr.as_ptr(), vector_length as i32, 
+                    data_type, ptr::null(), ptr::null(), ptr::null(), ptr::null_mut(), None, 0),
                 data_type,
                 owned: true,
                 vector_length

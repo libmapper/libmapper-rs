@@ -63,7 +63,7 @@ impl Signal {
     }
 
     /// Get the type of data this signal is storing.
-    pub fn get_type(&self) -> mpr_type {
+    pub fn get_data_type(&self) -> mpr_type {
         self.data_type
     }
 

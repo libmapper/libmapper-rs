@@ -1,4 +1,3 @@
-#![feature(const_trait_impl,effects)]
 use bindings::mpr_get_version;
 
 pub mod device;

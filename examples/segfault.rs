@@ -26,7 +26,7 @@ fn main() {
     num_workers = arg.unwrap().parse::<i32>().unwrap_or(10);
   }
 
-  // spawn 10 threads creating then deleting devices at random
+  // spawn n threads creating then deleting devices at random
   for _ in 0..num_workers {
     let graph = graph.clone();
     let id_counter = counter.clone();

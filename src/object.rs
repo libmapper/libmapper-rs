@@ -18,8 +18,11 @@ impl AsMprObject for Device {
 }
 
 pub trait MapperObject {
+  /// Get the `mpr_type` representing this object
   fn get_type(&self) -> mpr_type;
+  /// Set a property on this object to a numerical value
   fn set_property<T: MappableType>(&self, property: mpr_prop, value: T);
+  /// Set a property on this object to a string value
   fn set_property_str(&self, property: mpr_prop, value: &str);
 }
 
@@ -29,11 +32,13 @@ impl<A> MapperObject for A where A: AsMprObject {
       mpr_obj_get_type(self.as_mpr_object())
     }
   }
+
   fn set_property<T: MappableType>(&self, property: mpr_prop, value: T) {
     unsafe {
       mpr_obj_set_prop(self.as_mpr_object(), property, ptr::null(), 1, T::get_mpr_type(), &value as *const T as *const c_void, 1);
     }
   }
+
   fn set_property_str(&self, property: mpr_prop, value: &str) {
     let value_ptr = std::ffi::CString::new(value).expect("CString::new failed");
     unsafe {

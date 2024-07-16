@@ -1,6 +1,6 @@
 use std::time::{SystemTime, UNIX_EPOCH};
 
-use libmapper_rs::{constants::mpr_dir, device::Device};
+use libmapper_rs::{constants::{mpr_dir, mpr_prop}, device::Device, object::MapperObject};
 
 fn main() {
     let dev = Device::create("rustmapper");
@@ -13,6 +13,9 @@ fn main() {
 
     println!("Device became ready!");
     let mut sig = dev.create_signal::<f64>("test_sin", mpr_dir::MPR_DIR_OUT);
+    sig.set_property(mpr_prop::MPR_PROP_MIN, -1.0);
+    sig.set_property(mpr_prop::MPR_PROP_MAX, 1.0);
+    
     let debug_sig = dev.create_signal::<f64>("debug_msg", mpr_dir::MPR_DIR_IN);
     loop {
         dev.poll_and_block(100);

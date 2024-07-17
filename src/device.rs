@@ -75,7 +75,7 @@ impl Device {
         }
     }
     /// Processes all messages in the device's queue, no matter how long it takes.
-    /// In a multithreaded environment this is probably what you want to use instead of [poll](Device::poll)
+    /// If using dedicated threads to poll devices this is probably what you want to use instead of [poll](Device::poll)
     pub fn poll_all(&self) {
         unsafe {
             mpr_dev_poll(self.handle, -1);

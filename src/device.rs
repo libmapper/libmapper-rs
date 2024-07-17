@@ -65,7 +65,7 @@ impl Device {
     /// Poll the device without blocking
     ///
     /// # Notes
-    /// You may want to use [poll_all](Device::poll-all) in a multithreaded enviroment,
+    /// You may want to use [poll_all](Device::poll_all) in a multithreaded enviroment,
     /// when using non-blocking polling libmapper will use a heuristic to determine how many messages
     /// to parse at once for performance. If you don't care how long this function will take to run,
     /// call Device::poll_all.

@@ -49,6 +49,7 @@ pub struct Map {
 }
 
 impl Map {
+  
   pub fn create(src: &Signal, dst: &Signal) -> Map {
     Map {
       handle: unsafe { mpr_map_new(1, &src.handle, 1, &dst.handle) }
@@ -64,6 +65,13 @@ impl Map {
   pub fn is_ready(&self) -> bool {
     unsafe {
       mpr_map_get_is_ready(self.handle) != 0
+    }
+  }
+
+  /// Destroy the map, severing the connection between the signals.
+  pub fn release(self) {
+    unsafe {
+      mpr_map_release(self.handle)
     }
   }
 }

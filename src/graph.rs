@@ -49,19 +49,24 @@ pub struct Map {
 }
 
 impl Map {
-  
+  /// Create a new map between two signals.
+  /// This does not actually create the map in the graph, [push](Map::push) must be called to let the rest of the graph know about the map.
   pub fn create(src: &Signal, dst: &Signal) -> Map {
     Map {
       handle: unsafe { mpr_map_new(1, &src.handle, 1, &dst.handle) }
     }
   }
 
+  /// Publish this map to the distributed graph.
+  /// After calling this function and once [is_ready](Map::is_ready) returns `true`, the map is active.
   pub fn push(&self) {
     unsafe {
       mpr_obj_push(self.handle);
     }
   }
 
+  /// Returns `true` once the map has been published and is active.
+  /// Otherwise, returns false.
   pub fn is_ready(&self) -> bool {
     unsafe {
       mpr_map_get_is_ready(self.handle) != 0

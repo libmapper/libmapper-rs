@@ -78,7 +78,9 @@ impl Signal {
 
 /// A struct that represents the status of a signal instance.
 /// When this struct is created by Signal::get_status(), the flags `was_set_remote` and `was_set_local` will be reset.
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub struct SignalStatus(i32);
+
 impl SignalStatus {
     /// Returns true if the signal was set remotely since the last time the status was queried.
     pub fn was_set_remote(&self) -> bool {

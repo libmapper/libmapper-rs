@@ -22,15 +22,16 @@ use crate::signal::Signal;
 /// }
 /// // create signals, etc...
 /// ```
-pub struct Device {
+pub struct Device<'a> {
     pub(crate) handle: mpr_dev,
-    owned: bool
+    owned: bool,
+    graph: Option<&'a Graph>
 }
 
-unsafe impl Send for Device {}
-unsafe impl Sync for Device {}
+unsafe impl Send for Device<'_> {}
+unsafe impl Sync for Device<'_> {}
 
-impl Drop for Device {
+impl Drop for Device<'_> {
     fn drop(&mut self) {
         if self.owned {
             unsafe {
@@ -40,28 +41,30 @@ impl Drop for Device {
     }
 }
 
-impl Device {
+impl Device<'_> {
     pub fn create(name: &str) -> Device {
         let name_ptr = CString::new(name).expect("CString::new failed");
         unsafe {
             Device {
                 owned: true,
-                handle: mpr_dev_new(name_ptr.as_ptr(), ptr::null_mut())
+                handle: mpr_dev_new(name_ptr.as_ptr(), ptr::null_mut()),
+                graph: None
             }
         }
     }
-    pub fn create_from_graph(name: &str, graph: &Graph) -> Device {
+    pub fn create_from_graph<'a>(name: &str, graph: &'a Graph) -> Device<'a> {
         let name_ptr = CString::new(name).expect("CString::new failed");
         unsafe {
             Device {
                 owned: true,
-                handle: mpr_dev_new(name_ptr.as_ptr(), graph.handle)
+                handle: mpr_dev_new(name_ptr.as_ptr(), graph.handle),
+                graph: Some(graph)
             }
         }
     }
 }
 
-impl Device {
+impl Device<'_> {
     /// Poll the device without blocking
     ///
     /// # Notes
@@ -90,7 +93,7 @@ impl Device {
     }
 }
 
-impl Device {
+impl Device<'_> {
     /// Tests if the device is ready to use.
     /// Do not try to call any other methods until this returns `true`.
     pub fn is_ready(&self) -> bool {
@@ -122,7 +125,7 @@ impl MappableType for i32 {
     }
 }
 
-impl Device {
+impl Device<'_> {
     pub fn create_signal<T: MappableType + Copy>(&self, name: &str, direction: mpr_dir) -> Signal {
         self.create_vector_signal::<T>(name, direction, 1)
     }

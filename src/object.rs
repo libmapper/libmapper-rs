@@ -11,7 +11,7 @@ impl AsMprObject for Signal {
     self.handle as *mut c_void
   }
 }
-impl AsMprObject for Device {
+impl AsMprObject for Device<'_> {
   fn as_mpr_object(&self) -> *mut c_void {
     self.handle as *mut c_void
   }

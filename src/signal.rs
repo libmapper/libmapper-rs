@@ -98,6 +98,11 @@ impl SignalStatus {
     pub fn is_active(&self) -> bool {
         self.0 & mpr_sig_inst_status::MPR_SIG_INST_IS_ACTIVE as i32 != 0
     }
+    /// If the actual numerical value of the signal has changed since the last time the status was queried.
+    pub fn value_updated(&self) -> bool {
+        self.0 & mpr_sig_inst_status::MPR_STATUS_NEW_VALUE as i32 != 0
+    
+    }
 }
 
 impl Signal {

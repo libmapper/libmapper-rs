@@ -180,13 +180,15 @@ pub enum mpr_sig_evt {
 #[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
 pub enum mpr_sig_inst_status {
     #[doc = "< Instance value has been set remotely."]
-    MPR_SIG_INST_SET_REMOTE = 16,
+    MPR_SIG_INST_SET_REMOTE = 0x0200,
     #[doc = "< Instance value has been set locally."]
-    MPR_SIG_INST_SET_LOCAL = 32,
+    MPR_SIG_INST_SET_LOCAL = 0x0100,
     #[doc = "< Instance value has a value."]
-    MPR_SIG_INST_HAS_VALUE = 64,
+    MPR_SIG_INST_HAS_VALUE = 0x0040,
     #[doc = "< Instance value has a value."]
-    MPR_SIG_INST_IS_ACTIVE = 8,
+    MPR_SIG_INST_IS_ACTIVE = 0x0020,
+    #[doc = "< Instance value has changed since last checked"]
+    MPR_STATUS_NEW_VALUE = 0x0080
 }
 #[repr(u32)]
 #[doc = " Describes the voice-stealing mode for instances.\n  @ingroup map"]

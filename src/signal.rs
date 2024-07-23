@@ -1,7 +1,7 @@
 
 use std::ffi::c_void;
 
-use crate::{bindings::{mpr_sig, mpr_sig_free, mpr_sig_get_inst_status, mpr_sig_get_value, mpr_sig_inst_status, mpr_sig_set_value, mpr_type}, device::MappableType};
+use crate::{bindings::{mpr_sig, mpr_sig_free, mpr_sig_get_inst_status, mpr_sig_get_value, mpr_status, mpr_sig_set_value, mpr_type}, device::MappableType};
 
 pub struct Signal {
     pub(crate) handle: mpr_sig,
@@ -84,24 +84,23 @@ pub struct SignalStatus(i32);
 impl SignalStatus {
     /// Returns true if the signal was set remotely since the last time the status was queried.
     pub fn was_set_remote(&self) -> bool {
-        self.0 & mpr_sig_inst_status::MPR_SIG_INST_SET_REMOTE as i32 != 0
+        self.0 & mpr_status::MPR_STATUS_UPDATE_REM as i32 != 0
     }
     /// Returns true if the signal was set locally since the last time the status was queried.
     pub fn was_set_local(&self) -> bool {
-        self.0 & mpr_sig_inst_status::MPR_SIG_INST_SET_LOCAL as i32 != 0
+        self.0 & mpr_status::MPR_STATUS_UPDATE_LOC as i32 != 0
     }
     /// Returns true if the signal has a value (i.e. Signal::get_value* will return Some).
     pub fn has_value(&self) -> bool {
-        self.0 & mpr_sig_inst_status::MPR_SIG_INST_HAS_VALUE as i32 != 0
+        self.0 & mpr_status::MPR_STATUS_HAS_VALUE as i32 != 0
     }
     /// If the signal is active
     pub fn is_active(&self) -> bool {
-        self.0 & mpr_sig_inst_status::MPR_SIG_INST_IS_ACTIVE as i32 != 0
+        self.0 & mpr_status::MPR_STATUS_ACTIVE as i32 != 0
     }
     /// If the actual numerical value of the signal has changed since the last time the status was queried.
     pub fn value_updated(&self) -> bool {
-        self.0 & mpr_sig_inst_status::MPR_STATUS_NEW_VALUE as i32 != 0
-    
+        self.0 & mpr_status::MPR_STATUS_NEW_VALUE as i32 != 0
     }
 }
 

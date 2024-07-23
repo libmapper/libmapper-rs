@@ -161,36 +161,6 @@ pub enum mpr_dir {
     MPR_DIR_BOTH = 7,
 }
 #[repr(u32)]
-#[doc = " The set of possible signal events, used to register and inform callbacks.\n  @ingroup signal"]
-#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
-pub enum mpr_sig_evt {
-    #[doc = "< New instance has been created."]
-    MPR_SIG_INST_NEW = 1,
-    #[doc = "< Instance was released upstream."]
-    MPR_SIG_REL_UPSTRM = 2,
-    #[doc = "< Instance was released downstream."]
-    MPR_SIG_REL_DNSTRM = 4,
-    #[doc = "< No local instances left."]
-    MPR_SIG_INST_OFLW = 8,
-    #[doc = "< Instance value has been updated."]
-    MPR_SIG_UPDATE = 16,
-    MPR_SIG_ALL = 31,
-}
-#[repr(u32)]
-#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
-pub enum mpr_sig_inst_status {
-    #[doc = "< Instance value has been set remotely."]
-    MPR_SIG_INST_SET_REMOTE = 0x0200,
-    #[doc = "< Instance value has been set locally."]
-    MPR_SIG_INST_SET_LOCAL = 0x0100,
-    #[doc = "< Instance value has a value."]
-    MPR_SIG_INST_HAS_VALUE = 0x0040,
-    #[doc = "< Instance value has a value."]
-    MPR_SIG_INST_IS_ACTIVE = 0x0020,
-    #[doc = "< Instance value has changed since last checked"]
-    MPR_STATUS_NEW_VALUE = 0x0080
-}
-#[repr(u32)]
 #[doc = " Describes the voice-stealing mode for instances.\n  @ingroup map"]
 #[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
 pub enum mpr_steal_type {
@@ -202,30 +172,53 @@ pub enum mpr_steal_type {
     MPR_STEAL_NEWEST = 2,
 }
 #[repr(u32)]
-#[doc = " The set of possible graph events, used to inform callbacks.\n  @ingroup graph"]
-#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
-pub enum mpr_graph_evt {
-    #[doc = "< New record has been added to the graph."]
-    MPR_OBJ_NEW = 0,
-    #[doc = "< The existing record has been modified."]
-    MPR_OBJ_MOD = 1,
-    #[doc = "< The existing record has been removed."]
-    MPR_OBJ_REM = 2,
-    #[doc = "< The graph has lost contact with the remote entity."]
-    MPR_OBJ_EXP = 3,
-}
-#[repr(u32)]
 #[doc = " Describes the possible statuses for a libmapper object.\n  @ingroup object"]
 #[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
 pub enum mpr_status {
     MPR_STATUS_UNDEFINED = 0,
-    MPR_STATUS_EXPIRED = 1,
-    MPR_STATUS_STAGED = 2,
-    MPR_STATUS_WAITING = 14,
-    MPR_STATUS_READY = 54,
-    MPR_STATUS_ACTIVE = 126,
-    MPR_STATUS_RESERVED = 128,
-    MPR_STATUS_ANY = 255,
+    MPR_STATUS_NEW = 1,
+    MPR_STATUS_MODIFIED = 2,
+    MPR_STATUS_REMOVED = 4,
+    MPR_STATUS_EXPIRED = 8,
+    MPR_STATUS_STAGED = 16,
+    MPR_STATUS_ACTIVE = 32,
+    MPR_STATUS_HAS_VALUE = 64,
+    MPR_STATUS_NEW_VALUE = 128,
+    MPR_STATUS_UPDATE_LOC = 256,
+    MPR_STATUS_UPDATE_REM = 512,
+    MPR_STATUS_REL_UPSTRM = 1024,
+    MPR_STATUS_REL_DNSTRM = 2048,
+    MPR_STATUS_OVERFLOW = 4096,
+    MPR_STATUS_ANY = 8191,
+}
+#[repr(u32)]
+#[doc = " The set of possible graph events, used to inform callbacks.\n  @ingroup graph"]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub enum mpr_graph_evt {
+    #[doc = "< New record has been added to the graph."]
+    MPR_OBJ_NEW = mpr_status::MPR_STATUS_NEW as u32,
+    #[doc = "< The existing record has been modified."]
+    MPR_OBJ_MOD = mpr_status::MPR_STATUS_MODIFIED as u32,
+    #[doc = "< The existing record has been removed."]
+    MPR_OBJ_REM = mpr_status::MPR_STATUS_REMOVED as u32,
+    #[doc = "< The graph has lost contact with the remote entity."]
+    MPR_OBJ_EXP = mpr_status::MPR_STATUS_EXPIRED as u32,
+}
+#[repr(u32)]
+#[doc = " The set of possible signal events, used to register and inform callbacks.\n  @ingroup signal"]
+#[derive(Debug, Copy, Clone, Hash, PartialEq, Eq)]
+pub enum mpr_sig_evt {
+    #[doc = "< New instance has been created."]
+    MPR_SIG_INST_NEW = mpr_status::MPR_STATUS_NEW as u32,
+    #[doc = "< Instance was released upstream."]
+    MPR_SIG_REL_UPSTRM = mpr_status::MPR_STATUS_REL_UPSTRM as u32,
+    #[doc = "< Instance was released downstream."]
+    MPR_SIG_REL_DNSTRM = mpr_status::MPR_STATUS_REL_DNSTRM as u32,
+    #[doc = "< No local instances left."]
+    MPR_SIG_INST_OFLW = mpr_status::MPR_STATUS_OVERFLOW as u32,
+    #[doc = "< Instance value has been updated."]
+    MPR_SIG_UPDATE = mpr_status::MPR_STATUS_UPDATE_REM as u32,
+    MPR_SIG_ALL = mpr_status::MPR_STATUS_ANY as u32,
 }
 #[doc = " Abstraction for accessing any object type."]
 pub type mpr_obj = *mut ::std::os::raw::c_void;

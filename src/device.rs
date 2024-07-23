@@ -125,7 +125,16 @@ impl MappableType for i32 {
     }
 }
 
+impl<'a> Device<'a> {
+    pub fn get_graph(&self) -> Option<&'a Graph> {
+        self.graph
+    }
+}
+
 impl Device<'_> {
+    pub fn has_shared_graph(&self) -> bool {
+        self.graph.is_some()
+    }
     pub fn create_signal<T: MappableType + Copy>(&self, name: &str, direction: mpr_dir) -> Signal {
         self.create_vector_signal::<T>(name, direction, 1)
     }

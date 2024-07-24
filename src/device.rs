@@ -42,6 +42,13 @@ impl Drop for Device<'_> {
 }
 
 impl Device<'_> {
+    /// Create a new device with the given name.
+    /// The device will use it's own connection to the graph.
+    ///
+    /// Before calling any other methods on the device, you should poll it until it is ready.
+    /// 
+    /// # Notes
+    /// If you plan on creating multiple devices, consider using (Device::create_from_graph)[Device::create_from_graph] instead to pool resources.
     pub fn create(name: &str) -> Device {
         let name_ptr = CString::new(name).expect("CString::new failed");
         unsafe {
@@ -52,6 +59,8 @@ impl Device<'_> {
             }
         }
     }
+    /// Create a new device with a shared graph.
+    /// Sharing a graph between devices allows them to pool some resources and networking, potentially improving performance.
     pub fn create_from_graph<'a>(name: &str, graph: &'a Graph) -> Device<'a> {
         let name_ptr = CString::new(name).expect("CString::new failed");
         unsafe {
@@ -103,7 +112,11 @@ impl Device<'_> {
     }
 }
 
+/// Marker trait for types that are bit-compatible with the libmapper C library.
+/// If this trait is implemented on a type, that type can be passed to libmapper functions safely.
+/// Use the `get_mpr_type` function to pass a type parameter to libmapper.
 pub trait MappableType {
+    /// Get the `mpr_type` representing this rust type.
     fn get_mpr_type() -> mpr_type;
 }
 
@@ -126,18 +139,41 @@ impl MappableType for i32 {
 }
 
 impl<'a> Device<'a> {
+    /// Get the shared graph used by this device.
+    /// If the device was created with [Device::create](Device::create) this will return None.
     pub fn get_graph(&self) -> Option<&'a Graph> {
         self.graph
     }
 }
 
 impl Device<'_> {
+    /// Check if the device was created with a shared graph.
     pub fn has_shared_graph(&self) -> bool {
         self.graph.is_some()
     }
+    /// Create a signal with the given name and direction.
+    /// 
+    /// # Notes
+    /// - The signal will have a vector length of 1 (i.e. single value).
+    /// - The passed generic parameter controls what type of data the signal will hold.
+    /// 
+    /// # Examples
+    /// ```
+    /// use libmapper_rs::device::Device;
+    /// use libmapper_rs::constants::mpr_dir;
+    /// fn setup_signals(dev: &Device) {
+    ///     // create an outgoing signal that outputs a single f64 value
+    ///     let sig = dev.create_signal::<f64>("test_signal", mpr_dir::MPR_DIR_OUT);
+    /// }
+    /// ```
     pub fn create_signal<T: MappableType + Copy>(&self, name: &str, direction: mpr_dir) -> Signal {
         self.create_vector_signal::<T>(name, direction, 1)
     }
+    /// Create a signal with the given name, direction, and vector length.
+    /// 
+    /// # Notes
+    /// - The passed generic parameter controls what type of data the signal will hold.
+    /// 
     pub fn create_vector_signal<T: MappableType + Copy>(&self, name: &str, direction: mpr_dir, vector_length: u32) -> Signal {
         let data_type: mpr_type = T::get_mpr_type();
 

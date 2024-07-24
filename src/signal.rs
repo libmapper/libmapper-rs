@@ -106,7 +106,7 @@ impl SignalStatus {
 
 impl Signal {
     /// Set the value of the signal.
-    /// This function will return [SignalError::WrongType](SignalError:WrongType) if the passed generic type doesn't match the signal's type.
+    /// This function will return [`SignalError::WrongType`](SignalError:WrongType) if the passed generic type doesn't match the signal's type.
     /// 
     /// If this signal is a vector, only the first element of the vector will be set.
     pub fn set_value_single<T: MappableType + Copy>(&mut self, value: &T) -> Result<(), SignalError> {
@@ -120,7 +120,7 @@ impl Signal {
     }
 
     /// Get the value of the signal.
-    /// This function will return [SignalError::WrongType](SignalError:WrongType) if the passed generic type doesn't match the signal's type.
+    /// This function will return [`SignalError::WrongType`](SignalError:WrongType) if the passed generic type doesn't match the signal's type.
     /// 
     /// If this signal is a vector, only the first element of the vector will be returned.
     pub fn get_value_single<T: MappableType + Copy>(&self) -> Result<(T, u64), SignalError> {
@@ -139,7 +139,7 @@ impl Signal {
     }
 
     /// Get the value of the signal.
-    /// This function will return [SignalError::WrongType](SignalError:WrongType) if the passed generic type doesn't match the signal's type.
+    /// This function will return [`SignalError::WrongType`](SignalError:WrongType) if the passed generic type doesn't match the signal's type.
     /// 
     /// The length of the returned slice will be equal to the value returned by [get_vector_length](Signal::get_vector_length).
     pub fn get_value<T: MappableType + Copy>(&self) -> Result<(Vec<T>, u64), SignalError> {
@@ -158,7 +158,7 @@ impl Signal {
     }
 
     /// Set the value of the signal.
-    /// This function will return [SignalError::WrongType](SignalError:WrongType) if the passed generic type doesn't match the signal's type.
+    /// This function will return [`SignalError::WrongType`](SignalError:WrongType) if the passed generic type doesn't match the signal's type.
     /// 
     /// The length of the slice must be equal to the value returned by [get_vector_length](Signal::get_vector_length).
     /// If the lengths are not equal this function return an `Err` of `SignalError::WrongLengthArg`.

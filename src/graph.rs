@@ -1,3 +1,8 @@
+//! Graph and Map types for working with libmapper's distributed graph.
+//! 
+//! The [Map](Map) type is used to create a connection between two [Signal](crate::signal::Signal) instances.
+//! 
+//! The [Graph](Graph) type can be shared between devices to improve performance and memory usage.
 use crate::{bindings::*, signal::Signal};
 
 /// A graph is a lightweight connection to libmapper's distributed graph.
@@ -44,6 +49,26 @@ impl Graph {
   }
 }
 
+/// A directional between multiple signals. Changes to input signals will affect output signals.
+/// 
+/// # Examples
+/// Create a map between two signals:
+/// ```
+/// use std::thread;
+/// use std::time::Duration;
+/// use libmapper_rs::graph::Map;
+/// use libmapper_rs::signal::Signal;
+/// fn create_map(sig_a: &Signal, sig_b: &Signal) -> Map {
+///   let map = Map::create(sig_a, sig_b);
+///   loop {
+///     if map.is_ready() {
+///      break;
+///     }
+///    thread::sleep(Duration::from_millis(10));
+///   }
+///   map
+/// }
+/// ```
 pub struct Map {
   pub(crate) handle: mpr_map
 }

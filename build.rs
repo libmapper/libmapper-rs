@@ -4,7 +4,7 @@ fn main() {
     }
 
     pkg_config::Config::new()
-        .atleast_version("2.4.6")
+        .atleast_version("2.4.8")
         .probe("libmapper")
         .unwrap();
 }

@@ -13,7 +13,7 @@
 //! ```
 //! use libmapper_rs::device::Device;
 //! fn main() {
-//!     let mut device = Device::new("CoolDevice").unwrap();
+//!     let mut device = Device::create("CoolDevice");
 //!     loop {
 //!       device.poll_and_block(10);
 //!       if device.is_ready() {

@@ -1,8 +1,8 @@
 //! Graph and Map types for working with libmapper's distributed graph.
 //! 
-//! The [Map](Map) type is used to create a connection between two [Signal](crate::signal::Signal) instances.
+//! The [Map] type is used to create a connection between two [Signal] instances.
 //! 
-//! The [Graph](Graph) type can be shared between devices to improve performance and memory usage.
+//! The [Graph] type can be shared between devices to improve performance and memory usage.
 use crate::{bindings::*, signal::Signal};
 
 /// A graph is a lightweight connection to libmapper's distributed graph.

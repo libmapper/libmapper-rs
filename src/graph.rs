@@ -3,7 +3,7 @@
 //! The [Map] type is used to create a connection between two [Signal] instances.
 //! 
 //! The [Graph] type can be shared between devices to improve performance and memory usage.
-use crate::{bindings::*, signal::Signal};
+use crate::{bindings::*, signal::Signal, object::MapperObject};
 
 /// A graph is a lightweight connection to libmapper's distributed graph.
 /// You can use a graph to create maps and query the state of the graph.
@@ -103,5 +103,12 @@ impl Map {
     unsafe {
       mpr_map_release(self.handle)
     }
+  }
+
+  /// Set the expression used to map the values from the source(s) to the destination.
+  ///
+  /// This is a helper function wrapping [`MapperObject::set_property_str`]
+  pub fn set_expr(&self, expression: &str) {
+    self.set_property_str(mpr_prop::MPR_PROP_EXPR, expression);
   }
 }

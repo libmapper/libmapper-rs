@@ -1,6 +1,6 @@
 use std::{ffi::c_void, ptr};
 
-use crate::{bindings::{mpr_obj_get_prop_as_obj, mpr_obj_get_type, mpr_obj_set_prop, mpr_prop, mpr_type}, device::{Device, MappableType}, signal::Signal};
+use crate::{bindings::{mpr_obj_get_prop_as_obj, mpr_obj_get_type, mpr_obj_set_prop, mpr_prop, mpr_type}, device::{Device, MappableType}, signal::Signal, graph::Map};
 
 pub trait AsMprObject {
   fn as_mpr_object(&self) -> *mut c_void;
@@ -12,6 +12,12 @@ impl AsMprObject for Signal {
   }
 }
 impl AsMprObject for Device<'_> {
+  fn as_mpr_object(&self) -> *mut c_void {
+    self.handle as *mut c_void
+  }
+}
+
+impl AsMprObject for Map {
   fn as_mpr_object(&self) -> *mut c_void {
     self.handle as *mut c_void
   }

@@ -9,3 +9,4 @@ Below is a table of the libmapper-rs versions and the libmapper versions they ar
 | libmapper-rs | libmapper |
 |--------------|-----------|
 | 1.0.0        | 2.4.7     |
+| 1.1.0        | 2.4.9     |

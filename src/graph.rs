@@ -49,7 +49,7 @@ impl Graph {
   }
 }
 
-/// A directional between multiple signals. Changes to input signals will affect output signals.
+/// A directional connection between multiple signals. Changes to input signals will affect output signals.
 /// 
 /// # Examples
 /// Create a map between two signals:

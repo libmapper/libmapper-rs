@@ -39,7 +39,7 @@ pub trait MapperObject {
 
   /// Get the value of a property by it's key from this object.
   /// If the property does not exist, or if the type is not matched, this function will return `None`.
-  fn get_property<T: MappableType + Default + Copy>(&self, property: mpr_prop) -> Option<T>;
+  fn get_property<T: MappableType + Default + Copy>(&self, property: mpr_prop) -> Result<T, PropertyError>;
 }
 
 impl<A> MapperObject for A where A: AsMprObject {
@@ -62,20 +62,28 @@ impl<A> MapperObject for A where A: AsMprObject {
     }
   }
 
-  fn get_property<T: MappableType + Default + Copy>(&self, property: mpr_prop) -> Option<T> {
+  fn get_property<T: MappableType + Default + Copy>(&self, property: mpr_prop) -> Result<T, PropertyError> {
     unsafe {
       let mut actual_type: mpr_type = mpr_type::MPR_NULL;
       let mut value: *const c_void  = ptr::null();
       mpr_obj_get_prop_by_idx(self.as_mpr_object(), property as i32,  ptr::null_mut(), ptr::null_mut(), 
       &mut actual_type, &mut value, ptr::null_mut());
       if value.is_null() {
-        return None;
+        return Err(PropertyError::PropertyNotFound)
       }
       if actual_type != T::get_mpr_type() {
-        return None;
+        return Err(PropertyError::TypeMismatch)
       }
       let value = value as *const T;
-      Some(*value)
+      Ok(*value)
     }
   }
+}
+
+/// Errors that can occur when working with properties
+pub enum PropertyError {
+  /// The property was not found on the object
+  PropertyNotFound,
+  /// The property was found, but the type did not match the expected type
+  TypeMismatch
 }

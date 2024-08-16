@@ -138,6 +138,12 @@ impl MappableType for i32 {
     }
 }
 
+impl MappableType for i64 {
+    fn get_mpr_type() -> mpr_type {
+        mpr_type::MPR_INT64
+    }
+}
+
 impl<'a> Device<'a> {
     /// Get the shared graph used by this device.
     /// If the device was created with [Device::create](Device::create) this will return None.

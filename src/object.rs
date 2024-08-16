@@ -38,7 +38,7 @@ pub trait MapperObject {
   fn set_property_str(&self, property: mpr_prop, value: &str);
 
   /// Get the value of a property by it's key from this object.
-  /// If the property does not exist, or if the type is not matched, this function will return `None`.
+  /// If the property does not exist, or if the type is not matched, this function will return an error.
   fn get_property<T: MappableType + Default + Copy>(&self, property: mpr_prop) -> Result<T, PropertyError>;
 }
 

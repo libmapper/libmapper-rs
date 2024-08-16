@@ -18,7 +18,7 @@ fn main() {
     
     let debug_sig = dev.create_signal::<f64>("debug_msg", mpr_dir::MPR_DIR_IN);
 
-    assert!(debug_sig.get_property::<f64>(mpr_prop::MPR_PROP_MIN).is_none());
+    assert!(debug_sig.get_property::<f64>(mpr_prop::MPR_PROP_MIN).is_err());
     loop {
         dev.poll_and_block(100);
         let time = ((SystemTime::now()

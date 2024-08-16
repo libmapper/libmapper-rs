@@ -10,6 +10,6 @@ fn main() {
       break;
     }
   }
-  let p = dev.get_property_str(mpr_prop::MPR_PROP_NAME).unwrap();
-  println!("Device Name: {}", p);
+  let p = dev.get_property::<i64>(mpr_prop::MPR_PROP_ID).unwrap();
+  println!("Device ID: {}", p);
 }

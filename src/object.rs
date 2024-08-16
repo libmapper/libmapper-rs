@@ -81,6 +81,7 @@ impl<A> MapperObject for A where A: AsMprObject {
 }
 
 /// Errors that can occur when working with properties
+#[derive(Debug, PartialEq)]
 pub enum PropertyError {
   /// The property was not found on the object
   PropertyNotFound,

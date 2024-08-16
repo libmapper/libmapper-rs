@@ -1,6 +1,6 @@
 use std::{ffi::c_void, ptr};
 
-use crate::{bindings::{mpr_obj, mpr_obj_get_prop_as_obj, mpr_obj_get_type, mpr_obj_set_prop, mpr_prop, mpr_type}, device::{Device, MappableType}, graph::Map, signal::Signal};
+use crate::{bindings::{mpr_obj, mpr_obj_get_prop_as_obj, mpr_obj_get_prop_by_idx, mpr_obj_get_prop_by_key, mpr_obj_get_type, mpr_obj_set_prop, mpr_prop, mpr_type}, device::{Device, MappableType}, graph::Map, signal::Signal};
 
 pub trait AsMprObject {
   fn as_mpr_object(&self) -> *mut c_void;
@@ -64,12 +64,18 @@ impl<A> MapperObject for A where A: AsMprObject {
 
   fn get_property<T: MappableType + Default + Copy>(&self, property: mpr_prop) -> Option<T> {
     unsafe {
-      let result = mpr_obj_get_prop_as_obj(self.as_mpr_object(), property, ptr::null());
-      if result.is_null() {
-        None
-      } else {
-        Some(*(result as *const T))
+      let mut actual_type: mpr_type = mpr_type::MPR_NULL;
+      let mut value: *const c_void  = ptr::null();
+      mpr_obj_get_prop_by_idx(self.as_mpr_object(), property as i32,  ptr::null_mut(), ptr::null_mut(), 
+      &mut actual_type, &mut value, ptr::null_mut());
+      if value.is_null() {
+        return None;
       }
+      if actual_type != T::get_mpr_type() {
+        return None;
+      }
+      let value = value as *const T;
+      Some(*value)
     }
   }
 }

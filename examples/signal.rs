@@ -1,11 +1,11 @@
-use std::time::{SystemTime, UNIX_EPOCH};
+use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
 use libmapper_rs::{constants::{mpr_dir, mpr_prop}, device::Device, object::MapperObject};
 
 fn main() {
     let dev = Device::create("rustmapper");
     loop {
-        dev.poll_and_block(10);
+        dev.poll_and_block(Duration::from_millis(10));
         if dev.is_ready() {
             break;
         }
@@ -20,7 +20,7 @@ fn main() {
 
     assert!(debug_sig.get_property::<f64>(mpr_prop::MPR_PROP_MIN).is_err());
     loop {
-        dev.poll_and_block(100);
+        dev.poll_and_block(Duration::from_millis(100));
         let time = ((SystemTime::now()
             .duration_since(UNIX_EPOCH)
             .unwrap()

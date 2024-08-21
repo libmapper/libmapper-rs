@@ -1,11 +1,11 @@
-use std::time::{SystemTime, UNIX_EPOCH};
+use std::time::{Duration, SystemTime, UNIX_EPOCH};
 
 use libmapper_rs::{constants::mpr_dir, device::Device};
 
 fn main() {
     let dev = Device::create("rustmapper");
     loop {
-        dev.poll_and_block(10);
+        dev.poll_and_block(Duration::from_millis(10));
         if dev.is_ready() {
             break;
         }
@@ -15,7 +15,7 @@ fn main() {
     let mut sig = dev.create_vector_signal::<f64>("test_sin", mpr_dir::MPR_DIR_OUT, 2);
     let debug_sig = dev.create_vector_signal::<f64>("debug_msg", mpr_dir::MPR_DIR_IN, 2);
     loop {
-        dev.poll_and_block(100);
+        dev.poll_and_block(Duration::from_millis(100));
         let time = (SystemTime::now()
             .duration_since(UNIX_EPOCH)
             .unwrap()

@@ -12,11 +12,12 @@ use crate::signal::Signal;
 /// # Examples
 /// ```
 /// use libmapper_rs::device::Device;
+/// use std::time::Duration;
 /// // you can create a device with Device::create
 /// let dev = Device::create("rust");
 /// // you have to poll a device occasionally to make things happen
 /// loop {
-///     dev.poll_and_block(10); // poll in 10ms intervals
+///     dev.poll_and_block(Duration::from_millis(10)); // poll in 10ms intervals
 ///     if dev.is_ready() {
 ///        break;
 ///     }

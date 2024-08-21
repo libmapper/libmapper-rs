@@ -15,7 +15,7 @@
 //! fn main() {
 //!     let mut device = Device::create("CoolDevice");
 //!     loop {
-//!       device.poll_and_block(10);
+//!       device.poll_and_block(std::time::Duration::from_millis(10));
 //!       if device.is_ready() {
 //!          break;
 //!         }

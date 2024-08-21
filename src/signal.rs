@@ -43,9 +43,10 @@ impl Signal {
     /// ```
     /// use libmapper_rs::device::Device;
     /// use libmapper_rs::signal::Signal;
+    /// use std::time::Duration;
     /// fn main_loop(dev: &Device, sig: &mut Signal, value: &mut f64) {
     ///     loop {
-    ///        dev.poll_and_block(10);
+    ///        dev.poll_and_block(Duration::from_millis(10));
     /// 
     ///        if sig.get_status().was_set_remote() { // check if there's a new value waiting for us
     ///          let (new_value, _) = sig.get_value_single::<f64>().unwrap();

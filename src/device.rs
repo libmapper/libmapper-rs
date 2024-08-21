@@ -1,6 +1,7 @@
 use std::ffi::CString;
 use std::os::raw::c_int;
 use std::ptr;
+use std::time::Duration;
 use crate::bindings::{mpr_dev, mpr_dev_free, mpr_dev_get_is_ready, mpr_dev_new, mpr_dev_poll, mpr_dir, mpr_sig_new, mpr_type};
 use crate::graph::Graph;
 use crate::signal::Signal;
@@ -93,11 +94,11 @@ impl Device<'_> {
             mpr_dev_poll(self.handle, -1);
         }
     }
-    /// Blocks the current thread for `time` milliseconds.
+    /// Blocks the current thread for a specified amount of time.
     /// Use this function instead of sleeping in a loop.
-    pub fn poll_and_block(&self, time: u32) {
+    pub fn poll_and_block(&self, time: Duration) {
         unsafe {
-            mpr_dev_poll(self.handle, time as c_int);
+            mpr_dev_poll(self.handle, time.as_millis() as c_int);
         }
     }
 }

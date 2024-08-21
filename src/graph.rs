@@ -3,6 +3,8 @@
 //! The [Map] type is used to create a connection between two [Signal] instances.
 //! 
 //! The [Graph] type can be shared between devices to improve performance and memory usage.
+use std::{ffi::c_int, time::Duration};
+
 use crate::{bindings::*, signal::Signal, object::MapperObject};
 
 /// A graph is a lightweight connection to libmapper's distributed graph.
@@ -41,10 +43,12 @@ impl Graph {
       mpr_graph_poll(self.handle, 0);
     }
   }
-
-  pub fn poll_and_block(&self, time: i32) {
+  /// Poll the graph and block for the specified amount of time
+  /// 
+  /// Use this instead of sleeping in a loop
+  pub fn poll_and_block(&self, time: Duration) {
     unsafe {
-      mpr_graph_poll(self.handle, time);
+      mpr_graph_poll(self.handle, time.as_millis() as c_int);
     }
   }
 }

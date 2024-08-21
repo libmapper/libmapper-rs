@@ -25,7 +25,7 @@ impl AsMprObject for Map {
 
 impl AsMprObject for mpr_obj {
   fn as_mpr_object(&self) -> *mut c_void {
-      self as *const mpr_obj as *mut c_void
+      *self as *mut c_void
   }
 }
 

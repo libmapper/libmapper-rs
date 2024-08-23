@@ -44,6 +44,12 @@ pub trait MapperObject {
   /// Get the value of a string property by it's key from this object.
   /// If the property does not exist, or if the type is not matched, this function will return an error.
   fn get_property_str(&self, property: mpr_prop) -> Result<String, PropertyError>;
+
+  /// Set a user-defined property to the specified value.
+  /// The property is identified by a unique, case-sensitive string key.
+  /// 
+  /// If `publish` is true, the property will be published to other peers. Set to false if this property is only for local use.
+  fn set_custom_property<T: MappableType>(&self, property: &str, value: T, publish: bool);
 }
 
 impl<A> MapperObject for A where A: AsMprObject {
@@ -99,6 +105,14 @@ impl<A> MapperObject for A where A: AsMprObject {
       let value = std::ffi::CStr::from_ptr(value).to_str().unwrap().to_string();
       Ok(value)
     }
+  }
+  
+  fn set_custom_property<T: MappableType>(&self, property: &str, value: T, publish: bool) {
+      let property = std::ffi::CString::new(property).expect("CString::new failed");
+      unsafe {
+        mpr_obj_set_prop(self.as_mpr_object(), mpr_prop::MPR_PROP_EXTRA, property.as_ptr() as *const i8, 
+           1, T::get_mpr_type(), &value as *const T as *const c_void, publish.into());
+      }
   }
 }
 

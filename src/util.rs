@@ -24,3 +24,10 @@ pub fn read_list<T, J: Fn(*mut c_void) -> T>(list: *mut *mut c_void, constructor
 
   values
 }
+
+pub fn mpr_type_from_i32(i: i32) -> crate::constants::mpr_type {
+  unsafe {
+    // TODO: VERY BAD
+    std::mem::transmute(i)
+  }
+}

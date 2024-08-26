@@ -2,9 +2,11 @@ use std::ffi::CString;
 use std::os::raw::c_int;
 use std::ptr;
 use std::time::Duration;
-use crate::bindings::{mpr_dev, mpr_dev_free, mpr_dev_get_is_ready, mpr_dev_new, mpr_dev_poll, mpr_dir, mpr_sig_new, mpr_type};
+use crate::bindings::{mpr_dev, mpr_dev_free, mpr_dev_get_is_ready, mpr_dev_get_sigs, mpr_dev_new, mpr_dev_poll, mpr_dir, mpr_obj, mpr_prop, mpr_sig_new, mpr_type};
 use crate::graph::Graph;
+use crate::object::MapperObject;
 use crate::signal::Signal;
+use crate::util::mpr_type_from_i32;
 
 /// A device is libmapper's connection to the distributed graph.
 /// Each device is a collection of signal instances and their metadata.
@@ -195,5 +197,18 @@ impl Device<'_> {
                 vector_length
             }
         }
+    }
+    /// Get a list of all signals owned by this device.
+    pub fn get_signals(&self, direction: mpr_dir) -> Vec<Signal> {
+        let list = unsafe {mpr_dev_get_sigs(self.handle, direction)};
+        crate::util::read_list(list, |ptr| {
+            let kind = (ptr as mpr_obj).get_property::<i32>(mpr_prop::MPR_PROP_TYPE).unwrap();
+            Signal {
+                handle: ptr,
+                data_type: mpr_type_from_i32(kind),
+                owned: false,
+                vector_length: 0
+            }
+        })
     }
 }

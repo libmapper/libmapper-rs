@@ -74,7 +74,8 @@ impl Graph {
 /// }
 /// ```
 pub struct Map {
-  pub(crate) handle: mpr_map
+  pub(crate) handle: mpr_map,
+  pub(crate) owned: bool
 }
 
 impl Map {
@@ -82,7 +83,8 @@ impl Map {
   /// This does not actually create the map in the graph, [push](Map::push) must be called to let the rest of the graph know about the map.
   pub fn create(src: &Signal, dst: &Signal) -> Map {
     Map {
-      handle: unsafe { mpr_map_new(1, &src.handle, 1, &dst.handle) }
+      handle: unsafe { mpr_map_new(1, &src.handle, 1, &dst.handle) },
+      owned: true
     }
   }
 
@@ -104,6 +106,10 @@ impl Map {
 
   /// Destroy the map, severing the connection between the signals.
   pub fn release(self) {
+    if !self.owned {
+      return;
+    }
+
     unsafe {
       mpr_map_release(self.handle)
     }

@@ -61,7 +61,9 @@ impl Graph {
   pub fn subscribe(&self, device: Option<Device>, types: &[mpr_type]) {
     unsafe {
       let types_bitflag = types.iter()
-        .fold(0, |acc, &t| acc | (t as i32));
+        .map(|t| *t as i32)
+        .fold(0, |acc, t| acc | t);
+
       mpr_graph_subscribe(self.handle, device.map(|d| d.handle).unwrap_or(ptr::null_mut()), types_bitflag, -1);
     }
   }

@@ -26,8 +26,8 @@ use crate::signal::Signal;
 /// ```
 pub struct Device<'a> {
     pub(crate) handle: mpr_dev,
-    owned: bool,
-    graph: Option<&'a Graph>
+    pub(crate) owned: bool,
+    pub(crate) graph: Option<&'a Graph>
 }
 
 unsafe impl Send for Device<'_> {}

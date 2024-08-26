@@ -5,7 +5,7 @@
 //! The [Graph] type can be shared between devices to improve performance and memory usage.
 use std::{ffi::c_int, ptr, time::Duration};
 
-use crate::{bindings::*, device::Device, object::MapperObject, signal::Signal};
+use crate::{bindings::*, device::Device, object::MapperObject, signal::Signal, util::read_list};
 
 /// A graph is a lightweight connection to libmapper's distributed graph.
 /// You can use a graph to create maps and query the state of the graph.
@@ -73,26 +73,13 @@ impl Graph {
     let mut ptr = unsafe {
       mpr_graph_get_list(self.handle, mpr_type::MPR_DEV as i32)
     };
-    let len = unsafe { mpr_list_get_size(ptr) };
-
-    if len == 0 {
-      return Vec::new();
-    }
-
-    let mut devices = Vec::with_capacity(len as usize);
-
-    for _ in 0..len {
-      let dev = Device {
-        handle: unsafe { *ptr as mpr_dev },
+    read_list(ptr, |ptr| {
+      Device {
+        handle: ptr,
         owned: false,
-        graph: Some(self)
-      };
-      devices.push(dev);
-
-      ptr = unsafe {  mpr_list_get_next(ptr) };
-    }
-
-    devices
+        graph: Some(&self)
+      }
+    })
   }
 }
 

@@ -32,6 +32,8 @@ pub mod graph;
 pub mod signal;
 pub mod object;
 
+mod util;
+
 pub mod constants {
     pub use crate::bindings::mpr_dir;
     pub use crate::bindings::mpr_type;

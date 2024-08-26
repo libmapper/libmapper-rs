@@ -39,7 +39,7 @@ pub trait MapperObject {
 
   /// Get the value of a property by it's key from this object.
   /// If the property does not exist, or if the type is not matched, this function will return an error.
-  fn get_property<T: MappableType + Default + Copy>(&self, property: mpr_prop) -> Result<T, PropertyError>;
+  fn get_property<T: MappableType + Copy>(&self, property: mpr_prop) -> Result<T, PropertyError>;
 
   /// Get the value of a string property by it's key from this object.
   /// If the property does not exist, or if the type is not matched, this function will return an error.
@@ -72,7 +72,7 @@ impl<A> MapperObject for A where A: AsMprObject {
     }
   }
 
-  fn get_property<T: MappableType + Default + Copy>(&self, property: mpr_prop) -> Result<T, PropertyError> {
+  fn get_property<T: MappableType + Copy>(&self, property: mpr_prop) -> Result<T, PropertyError> {
     unsafe {
       let mut actual_type: mpr_type = mpr_type::MPR_NULL;
       let mut value: *const c_void  = ptr::null();

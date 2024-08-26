@@ -1,7 +1,7 @@
 
 use std::ffi::c_void;
 
-use crate::{bindings::{mpr_sig, mpr_sig_free, mpr_sig_get_inst_status, mpr_sig_get_value, mpr_status, mpr_sig_set_value, mpr_type}, device::MappableType};
+use crate::{bindings::{mpr_dir, mpr_prop, mpr_sig, mpr_sig_free, mpr_sig_get_inst_status, mpr_sig_get_value, mpr_sig_set_value, mpr_status, mpr_type}, device::MappableType, object::MapperObject};
 
 pub struct Signal {
     pub(crate) handle: mpr_sig,
@@ -174,5 +174,20 @@ impl Signal {
             mpr_sig_set_value(self.handle, 0, self.vector_length as i32, self.data_type, values.as_ptr() as *const c_void);
         }
         Ok(())
+    }
+
+    /// Get the direction of the signal. This value determines how signal data can flow to/from this signal.
+    /// 
+    /// For example, you cannot map to a signal with direction `MPR_DIR_OUT`.
+    pub fn get_direction(&self) -> mpr_dir {
+        let val = self.get_property::<i32>(mpr_prop::MPR_PROP_DIR).unwrap();
+        match val {
+            0 => mpr_dir::MPR_DIR_UNDEFINED,
+            1 => mpr_dir::MPR_DIR_IN,
+            2 => mpr_dir::MPR_DIR_OUT,
+            3 => mpr_dir::MPR_DIR_ANY,
+            7 => mpr_dir::MPR_DIR_BOTH,
+            _ => mpr_dir::MPR_DIR_UNDEFINED
+        }
     }
 }

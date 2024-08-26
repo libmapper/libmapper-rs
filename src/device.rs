@@ -208,10 +208,10 @@ impl Device<'_> {
     pub fn get_signals(&self, direction: mpr_dir) -> Vec<Signal> {
         let list = unsafe {mpr_dev_get_sigs(self.handle, direction)};
         crate::util::read_list(list, |ptr| {
-            let kind = (ptr as mpr_obj).get_property::<i32>(mpr_prop::MPR_PROP_TYPE).unwrap();
+            let kind = (ptr as mpr_obj).get_property::<mpr_type>(mpr_prop::MPR_PROP_TYPE).unwrap();
             Signal {
                 handle: ptr,
-                data_type: mpr_type_from_i32(kind),
+                data_type: kind,
                 owned: false,
                 vector_length: 0
             }

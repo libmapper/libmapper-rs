@@ -6,7 +6,6 @@ use crate::bindings::{mpr_dev, mpr_dev_free, mpr_dev_get_is_ready, mpr_dev_get_s
 use crate::graph::Graph;
 use crate::object::MapperObject;
 use crate::signal::Signal;
-use crate::util::mpr_type_from_i32;
 
 /// A device is libmapper's connection to the distributed graph.
 /// Each device is a collection of signal instances and their metadata.

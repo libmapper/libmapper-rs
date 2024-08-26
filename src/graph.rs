@@ -51,7 +51,7 @@ impl Graph {
       mpr_graph_poll(self.handle, time.as_millis() as c_int);
     }
   }
-  
+
   /// Tells the graph to subscribe to receive updates for the specified device and types.
   /// If the device is `None`, the graph will automatically subscribe to all devices as they become visible.  
   /// 
@@ -70,11 +70,16 @@ impl Graph {
   /// 
   /// If [subscribe](Graph::subscribe) has not been called, this function will not be able to see any devices (except those owned by this graph via `Device::create_from_graph`).
   pub fn get_devices<'a>(&'a self) -> Vec<Device<'a>> {
-    let mut devices = Vec::new();
     let mut ptr = unsafe {
       mpr_graph_get_list(self.handle, mpr_type::MPR_DEV as i32)
     };
     let len = unsafe { mpr_list_get_size(ptr) };
+
+    if len == 0 {
+      return Vec::new();
+    }
+
+    let mut devices = Vec::with_capacity(len as usize);
 
     for _ in 0..len {
       let dev = Device {

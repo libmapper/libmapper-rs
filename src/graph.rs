@@ -3,9 +3,9 @@
 //! The [Map] type is used to create a connection between two [Signal] instances.
 //! 
 //! The [Graph] type can be shared between devices to improve performance and memory usage.
-use std::{ffi::c_int, time::Duration};
+use std::{ffi::c_int, ptr, time::Duration};
 
-use crate::{bindings::*, signal::Signal, object::MapperObject};
+use crate::{bindings::*, device::Device, object::MapperObject, signal::Signal};
 
 /// A graph is a lightweight connection to libmapper's distributed graph.
 /// You can use a graph to create maps and query the state of the graph.
@@ -49,6 +49,20 @@ impl Graph {
   pub fn poll_and_block(&self, time: Duration) {
     unsafe {
       mpr_graph_poll(self.handle, time.as_millis() as c_int);
+    }
+  }
+  
+  /// Tells the graph to subscribe to receive updates for the specified device and types.
+  /// If the device is `None`, the graph will automatically subscribe to all devices as they become visible.  
+  /// 
+  /// `types` allows filtering the objects of interest. For example, to only listen for information about signals, use `[mpr_type::MPR_SIG]`.
+  /// 
+  /// This function must be called before functions like [get_devices](Graph::get_devices) will return any results.
+  pub fn subscribe(&self, device: Option<Device>, types: &[mpr_type]) {
+    unsafe {
+      let types_bitflag = types.iter()
+        .fold(0, |acc, &t| acc | (t as i32));
+      mpr_graph_subscribe(self.handle, device.map(|d| d.handle).unwrap_or(ptr::null_mut()), types_bitflag, -1);
     }
   }
 }

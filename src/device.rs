@@ -130,6 +130,12 @@ impl MappableType for f64 {
     }
 }
 
+impl MappableType for mpr_type {
+    fn get_mpr_type() -> mpr_type {
+        mpr_type::MPR_TYPE
+    }
+}
+
 impl MappableType for f32 {
     fn get_mpr_type() -> mpr_type {
         mpr_type::MPR_FLT

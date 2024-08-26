@@ -208,12 +208,13 @@ impl Device<'_> {
     pub fn get_signals(&self, direction: mpr_dir) -> Vec<Signal> {
         let list = unsafe {mpr_dev_get_sigs(self.handle, direction)};
         crate::util::read_list(list, |ptr| {
-            let kind = (ptr as mpr_obj).get_property::<mpr_type>(mpr_prop::MPR_PROP_TYPE).unwrap();
+            let data_type = (ptr as mpr_obj).get_property::<mpr_type>(mpr_prop::MPR_PROP_TYPE).unwrap();
+            let vector_length = (ptr as mpr_obj).get_property::<i32>(mpr_prop::MPR_PROP_LEN).unwrap() as u32;
             Signal {
                 handle: ptr,
-                data_type: kind,
+                data_type,
                 owned: false,
-                vector_length: 0
+                vector_length 
             }
         })
     }

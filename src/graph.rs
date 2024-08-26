@@ -65,6 +65,30 @@ impl Graph {
       mpr_graph_subscribe(self.handle, device.map(|d| d.handle).unwrap_or(ptr::null_mut()), types_bitflag, -1);
     }
   }
+
+  /// Get all devices currently visible to the graph.
+  /// 
+  /// If [subscribe](Graph::subscribe) has not been called, this function will not be able to see any devices (except those owned by this graph via `Device::create_from_graph`).
+  pub fn get_devices<'a>(&'a self) -> Vec<Device<'a>> {
+    let mut devices = Vec::new();
+    let mut ptr = unsafe {
+      mpr_graph_get_list(self.handle, mpr_type::MPR_DEV as i32)
+    };
+    let len = unsafe { mpr_list_get_size(ptr) };
+
+    for _ in 0..len {
+      let dev = Device {
+        handle: unsafe { *ptr as mpr_dev },
+        owned: false,
+        graph: Some(self)
+      };
+      devices.push(dev);
+
+      ptr = unsafe {  mpr_list_get_next(ptr) };
+    }
+
+    devices
+  }
 }
 
 /// A directional connection between multiple signals. Changes to input signals will affect output signals.

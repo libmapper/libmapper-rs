@@ -16,7 +16,7 @@ fn main() {
 
   loop {
 
-    graph.poll_and_block(Duration::from_millis(10));
+    graph.poll_and_block(Duration::from_millis(100));
     let list = graph.get_devices();
 
     if list.len() != 0 {

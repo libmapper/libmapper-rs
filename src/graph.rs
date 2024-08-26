@@ -70,7 +70,7 @@ impl Graph {
   /// 
   /// If [subscribe](Graph::subscribe) has not been called, this function will not be able to see any devices (except those owned by this graph via `Device::create_from_graph`).
   pub fn get_devices<'a>(&'a self) -> Vec<Device<'a>> {
-    let mut ptr = unsafe {
+    let ptr = unsafe {
       mpr_graph_get_list(self.handle, mpr_type::MPR_DEV as i32)
     };
     read_list(ptr, |ptr| {

@@ -26,10 +26,12 @@ fn main() {
         for sig in signals {
           println!("\tSignal: {}", sig.get_property_str(mpr_prop::MPR_PROP_NAME).unwrap());
           println!("\t\tType: {:?}", sig.get_property::<mpr_type>(mpr_prop::MPR_PROP_TYPE).unwrap());
-          println!("\t\tMin: {:?}", sig.get_property::<f64>(mpr_prop::MPR_PROP_MIN));
-          println!("\t\tMax: {:?}", sig.get_property::<f64>(mpr_prop::MPR_PROP_MAX));
+          println!("\t\tVector Length: {:?}", sig.get_vector_length());
+          println!("\t\tMin: {:?}", sig.get_property::<f32>(mpr_prop::MPR_PROP_MIN));
+          println!("\t\tMax: {:?}", sig.get_property::<f32>(mpr_prop::MPR_PROP_MAX));
           println!("\t\tUnit: {:?}", sig.get_property_str(mpr_prop::MPR_PROP_UNIT));
           println!("\t\tNum instances: {:?}", sig.get_property::<i32>(mpr_prop::MPR_PROP_NUM_INST).unwrap());
+          println!("");
         }
       }
       break;

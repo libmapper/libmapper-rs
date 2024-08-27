@@ -12,7 +12,9 @@ fn main() {
   let mut count = 0;
 
   // Have to subscribe to all devices first in order to discover devices we don't own!
+  graph.poll_and_block(Duration::from_millis(100));
   graph.subscribe(None, &[mpr_type::MPR_DEV, mpr_type::MPR_SIG]);
+  graph.poll_and_block(Duration::from_millis(100)); // poll before and after to ensure discovery
 
   loop {
 

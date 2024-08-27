@@ -25,10 +25,10 @@ pub fn main() {
     }
     println!("Map created!");
     for i in 0..100 {
-        sig_a.set_value_single(&i).unwrap();
+        sig_a.set_value_scalar(&i).unwrap();
         dev.poll_and_block(Duration::from_millis(10));
         let val = sig_b
-            .get_value_single::<i32>()
+            .get_value_scalar::<i32>()
             .expect("Signal didn't send!");
         println!("Sent: {}, Received: {}", i, val.0);
         assert_eq!(i, val.0)

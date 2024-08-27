@@ -110,7 +110,7 @@ impl Signal {
     /// This function will return [`SignalError::WrongType`](SignalError:WrongType) if the passed generic type doesn't match the signal's type.
     /// 
     /// If this signal is a vector, only the first element of the vector will be set.
-    pub fn set_value_single<T: MappableType + Copy>(&mut self, value: &T) -> Result<(), SignalError> {
+    pub fn set_value_scalar<T: MappableType + Copy>(&mut self, value: &T) -> Result<(), SignalError> {
         if T::get_mpr_type() != self.data_type {
             return Err(SignalError::WrongType);
         }
@@ -124,7 +124,7 @@ impl Signal {
     /// This function will return [`SignalError::WrongType`](SignalError:WrongType) if the passed generic type doesn't match the signal's type.
     /// 
     /// If this signal is a vector, only the first element of the vector will be returned.
-    pub fn get_value_single<T: MappableType + Copy>(&self) -> Result<(T, u64), SignalError> {
+    pub fn get_value_scalar<T: MappableType + Copy>(&self) -> Result<(T, u64), SignalError> {
         let mut time = 0;
         if T::get_mpr_type() != self.data_type {
             return Err(SignalError::WrongType);

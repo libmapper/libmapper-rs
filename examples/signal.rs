@@ -27,11 +27,11 @@ fn main() {
             .as_millis() as u64) as f64
             / 1000f64)
             .sin();
-        sig.set_value_single(&time).unwrap();
+        sig.set_value_scalar(&time).unwrap();
         if debug_sig.get_status().was_set_remote() {
             println!(
                 "Received debug message: {:?}",
-                debug_sig.get_value_single::<f64>().unwrap()
+                debug_sig.get_value_scalar::<f64>().unwrap()
             );
         }
     }

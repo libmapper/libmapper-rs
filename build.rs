@@ -5,7 +5,7 @@ fn main() {
 
     if cfg!(windows) {
         println!("cargo:rustc-link-lib=libmapper");
-        println!("cargo:rustc-link-lin=liblo");
+        println!("cargo:rustc-link-lib=liblo");
     } else {
         pkg_config::Config::new()
             .atleast_version("2.4.9")

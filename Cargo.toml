@@ -10,4 +10,5 @@ repository = "https://github.com/libmapper/libmapper-rs"
 [dependencies]
 
 [build-dependencies]
-pkg-config = "0.3.30"
+pkg-config = "0.3.33"
+bindgen = "0.71.0"

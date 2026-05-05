@@ -52,7 +52,7 @@ impl Device<'_> {
     /// 
     /// # Notes
     /// If you plan on creating multiple devices, consider using (Device::create_from_graph)[Device::create_from_graph] instead to pool resources.
-    pub fn create(name: &str) -> Device {
+    pub fn create(name: &str) -> Device<'_> {
         let name_ptr = CString::new(name).expect("CString::new failed");
         unsafe {
             Device {

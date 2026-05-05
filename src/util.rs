@@ -1,6 +1,6 @@
 use std::ffi::c_void;
 
-use crate::bindings::{mpr_list_get_next, mpr_list_get_size};
+use crate::bindings::mpr_list_get_next;
 
 /// Read a list of items from a libmapper list.
 /// 
